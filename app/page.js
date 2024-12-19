@@ -1,101 +1,140 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
+import { toast } from 'sonner'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { saveOrder } from '@/utils/localStorage'
+import { shoes, Shoe } from '@/utils/shoeData'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const router = useRouter()
+  const [order, setOrder] = useState({
+    customerName: '',
+    productId: '',
+    quantity: 1,
+  })
+  const [selectedShoe, setSelectedShoe] = useState < Shoe | null > (null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!selectedShoe) {
+      toast.error('Please select a shoe')
+      return
+    }
+    const newOrder = {
+      id: Date.now().toString(),
+      customerName: order.customerName,
+      product: selectedShoe.name,
+      quantity: order.quantity,
+      totalPrice: selectedShoe.price * order.quantity,
+    }
+    saveOrder(newOrder)
+    setOrder({ customerName: '', productId: '', quantity: 1 })
+    setSelectedShoe(null)
+    router.refresh()
+    toast.success('Order created successfully!')
+  }
+
+  const handleShoeSelect = (shoeId) => {
+    const shoe = shoes.find(s => s.id === shoeId)
+    setSelectedShoe(shoe || null)
+    setOrder(prev => ({ ...prev, productId: shoeId }))
+  }
+
+  return (
+    <div className="min-h-screen py-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-8 text-blue-300">Shoe Store</h1>
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader className="bg-gray-800">
+            <CardTitle className="text-2xl text-blue-200">Create New Order</CardTitle>
+            <CardDescription className="text-gray-400">Select a shoe and fill in the details to create a new order.</CardDescription>
+          </CardHeader>
+          <CardContent className="mt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="customerName" className="text-lg text-gray-300">Customer Name</Label>
+                <Input
+                  id="customerName"
+                  value={order.customerName}
+                  onChange={(e) => setOrder({ ...order, customerName: e.target.value })}
+                  required
+                  placeholder="Enter customer's full name"
+                  className="w-full bg-gray-800 text-white border-gray-700"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="product" className="text-lg text-gray-300">Select Shoe</Label>
+                <Select onValueChange={handleShoeSelect} value={order.productId}>
+                  <SelectTrigger className="w-full bg-gray-800 text-white border-gray-700">
+                    <SelectValue placeholder="Select a shoe" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 text-white border-gray-700">
+                    {shoes.map((shoe) => (
+                      <SelectItem key={shoe.id} value={shoe.id} className="focus:bg-gray-700">
+                        {shoe.name} - ${shoe.price.toFixed(2)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {selectedShoe && (
+                <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
+                  <Image
+                    src={selectedShoe.image}
+                    alt={selectedShoe.name}
+                    width={100}
+                    height={100}
+                    className="rounded-md"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-lg text-blue-300">{selectedShoe.name}</h3>
+                    <p className="text-gray-400">${selectedShoe.price.toFixed(2)}</p>
+                  </div>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="quantity" className="text-lg text-gray-300">Quantity</Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  value={order.quantity}
+                  onChange={(e) => setOrder({ ...order, quantity: parseInt(e.target.value) })}
+                  required
+                  min="1"
+                  placeholder="Enter quantity"
+                  className="w-full bg-gray-800 text-white border-gray-700"
+                />
+              </div>
+              {selectedShoe && (
+                <div className="bg-gray-800 p-4 rounded-lg">
+                  <Label className="text-lg text-gray-300">Total Price</Label>
+                  <p className="text-2xl font-bold text-blue-300">${(selectedShoe.price * order.quantity).toFixed(2)}</p>
+                </div>
+              )}
+              <Button type="submit" className="w-full bg-blue-700 text-white hover:bg-blue-600">Create Order</Button>
+            </form>
+          </CardContent>
+          <CardFooter className="bg-gray-900">
+            <p className="text-sm text-gray-400">
+              All fields are required. Make sure to double-check the information before submitting.
+            </p>
+          </CardFooter>
+        </Card>
+        <div className="mt-6 text-center">
+          <Link href="/admin">
+            <Button variant="outline" className="bg-gray-800 text-white hover:bg-gray-700 border-gray-700">Go to Admin Page</Button>
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
-  );
+  )
 }
+
