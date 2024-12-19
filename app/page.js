@@ -27,7 +27,13 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!selectedShoe) {
-      toast.error('Please select a shoe')
+      // toast.error('Please select a shoe')
+
+      toast({
+        title: 'Please select a shoe',
+        variant: 'destructive',
+      })
+
       return
     }
     const newOrder = {
@@ -41,7 +47,12 @@ export default function Home() {
     setOrder({ customerName: '', productId: '', quantity: 1 })
     setSelectedShoe(null)
     router.refresh()
-    toast.success('Order created successfully!')
+    // toast.success('Order created successfully!')
+    toast({
+      title: 'Order created successfully!',
+      variant: 'success',
+    })
+
   }
 
   const handleShoeSelect = (shoeId) => {

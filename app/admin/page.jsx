@@ -59,9 +59,20 @@ export default function Admin() {
     e.preventDefault();
     if (password === "1234") {
       setAuthenticated(true);
-      toast.success("Logged in successfully!");
+      //   toast.success("Logged in successfully!");
+      toast({
+        title: "Logged in successfully!",
+        description: "You can now access the admin dashboard.",
+        variant: "success",
+      });
     } else {
-      toast.error("Incorrect password");
+      toast({
+        title: "Incorrect password",
+        description: "Please enter the correct password to login.",
+        variant: "destructive",
+      });
+
+      //   toast.error("Incorrect password");
     }
   };
 
@@ -74,14 +85,24 @@ export default function Admin() {
       updateOrder(editingOrder);
       setOrders(getOrders());
       setEditingOrder(null);
-      toast.success("Order updated successfully!");
+      //   toast.success("Order updated successfully!");
+
+      toast({
+        title: "Order updated successfully!",
+        variant: "success",
+      });
     }
   };
 
   const handleDelete = (id) => {
     deleteOrder(id);
     setOrders(getOrders());
-    toast.success("Order deleted successfully!");
+    // toast.success("Order deleted successfully!");
+
+    toast({
+      title: "Order deleted successfully!",
+      variant: "success",
+    });
   };
 
   if (!authenticated) {
