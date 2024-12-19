@@ -22,7 +22,7 @@ export default function Home() {
     productId: '',
     quantity: 1,
   })
-  const [selectedShoe, setSelectedShoe] = useState < Shoe | null > (null)
+  const [selectedShoe, setSelectedShoe] = useState  (null)
 
   const handleSubmit = (e) => {
     e.preventDefault()
