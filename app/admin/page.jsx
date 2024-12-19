@@ -47,7 +47,7 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [orders, setOrders] = useState([]);
-  const [editingOrder, setEditingOrder] = (useState < Order) | (null > null);
+  const [editingOrder, setEditingOrder] = useState(null);
 
   useEffect(() => {
     if (authenticated) {
@@ -63,7 +63,6 @@ export default function Admin() {
       toast({
         title: "Logged in successfully!",
         description: "You can now access the admin dashboard.",
-        variant: "success",
       });
     } else {
       toast({
@@ -88,8 +87,7 @@ export default function Admin() {
       //   toast.success("Order updated successfully!");
 
       toast({
-        title: "Order updated successfully!",
-        variant: "success",
+        description: "Order updated successfully!",
       });
     }
   };
@@ -100,8 +98,7 @@ export default function Admin() {
     // toast.success("Order deleted successfully!");
 
     toast({
-      title: "Order deleted successfully!",
-      variant: "success",
+      description: "Order deleted successfully!",
     });
   };
 
@@ -144,7 +141,7 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 bg-gray-950">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8 text-blue-300">
           Admin Dashboard
