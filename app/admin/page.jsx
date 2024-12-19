@@ -172,7 +172,7 @@ export default function Admin() {
                       {order.quantity}
                     </TableCell>
                     <TableCell className="text-gray-300">
-                      ${order.totalPrice.toFixed(2)}
+                      Rs . {order.totalPrice.toFixed(2)}
                     </TableCell>
                     <TableCell>
                       <Button

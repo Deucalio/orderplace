@@ -51,9 +51,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 bg-slate-950">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-blue-300">Shoe Store</h1>
+        <h1 className="text-3xl font-bold text-center mb-8 text-violet-700">Shoe Store</h1>
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader className="bg-gray-800">
             <CardTitle className="text-2xl text-blue-200">Create New Order</CardTitle>
@@ -118,7 +118,7 @@ export default function Home() {
               {selectedShoe && (
                 <div className="bg-gray-800 p-4 rounded-lg">
                   <Label className="text-lg text-gray-300">Total Price</Label>
-                  <p className="text-2xl font-bold text-blue-300">${(selectedShoe.price * order.quantity).toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-blue-300">Rs. {(selectedShoe.price * order.quantity).toFixed(2)}</p>
                 </div>
               )}
               <Button type="submit" className="w-full bg-blue-700 text-white hover:bg-blue-600">Create Order</Button>
