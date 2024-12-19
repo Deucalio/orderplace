@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { toast } from 'sonner'
+import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +15,8 @@ import { shoes, Shoe } from '@/utils/shoeData'
 
 export default function Home() {
   const router = useRouter()
+  const { toast } = useToast()
+
   const [order, setOrder] = useState({
     customerName: '',
     productId: '',

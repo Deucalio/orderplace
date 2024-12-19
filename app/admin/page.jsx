@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast"
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +41,8 @@ import {
 import { shoes, Shoe } from "@/utils/shoeData";
 
 export default function Admin() {
+    const { toast } = useToast()
+
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
